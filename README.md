@@ -25,22 +25,22 @@ Amazon ShortLink is an internal tier-1 URL shortening and analytics routing engi
 
 ```mermaid
 flowchart TD
-    subgraph Client Tier
+    subgraph ClientTier["Client Tier"]
         User["User Browser / Mobile Client"]
         Dashboard["React Admin Console (S3 + CloudFront)"]
     end
 
-    subgraph Security & Ingress
+    subgraph SecurityTier["Security and Ingress"]
         RateLimiter["Custom Token Bucket Rate Limiter (Per-IP)"]
     end
 
-    subgraph Service Tier (Spring Boot Core)
+    subgraph ServiceTier["Service Tier (Spring Boot Core)"]
         Controller["UrlShortenerController"]
         LRUCache["Custom Thread-Safe LRU Cache (HashMap + Doubly Linked List)"]
         AsyncWorkerPool["Async Analytics Worker Pool (ThreadPoolTaskExecutor)"]
     end
 
-    subgraph Persistence Tier (AWS DynamoDB)
+    subgraph PersistenceTier["Persistence Tier (AWS DynamoDB)"]
         LinksTable[("LinksTable (PK: short_code, TTL: expires_at)")]
         ClicksTable[("ClickEventsTable (PK: short_code, SK: timestamp#id, GSI: DateIndex)")]
     end
