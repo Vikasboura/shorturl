@@ -26,11 +26,11 @@ class ShortUrlRepositoryTest {
     @Mock
     private DynamoDbTable<ShortUrl> shortUrlTable;
 
-    private ShortUrlRepository repository;
+    private DynamoDbShortUrlRepository repository;
 
     @BeforeEach
     void setUp() {
-        repository = new ShortUrlRepository(shortUrlTable);
+        repository = new DynamoDbShortUrlRepository(shortUrlTable);
     }
 
     @Test

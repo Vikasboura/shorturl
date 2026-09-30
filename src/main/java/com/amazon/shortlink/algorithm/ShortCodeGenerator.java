@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  * and validates custom vanity aliases.
  */
 @Component
-public class ShortCodeGenerator {
+public class ShortCodeGenerator implements CodeGenerator {
 
     private static final String BASE62_ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final int DEFAULT_CODE_LENGTH = 7;
