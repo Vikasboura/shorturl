@@ -34,6 +34,18 @@ dist/
 build/
 .npm
 *.local
+.vite/
+dashboard/.vite/
+
+### Secrets, Env & Terraform ###
+.env
+.env.*
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfvars
+*.pem
+*.key
 
 ### Logs & OS ###
 *.log

@@ -139,8 +139,8 @@ public class DefaultAnalyticsService implements AnalyticsService {
         if (ua == null || ua.isBlank()) return "Unknown";
         String lower = ua.toLowerCase();
         if (lower.contains("windows")) return "Windows";
-        if (lower.contains("mac os") || lower.contains("macintosh")) return "macOS";
         if (lower.contains("iphone") || lower.contains("ipad")) return "iOS";
+        if (lower.contains("mac os") || lower.contains("macintosh")) return "macOS";
         if (lower.contains("android")) return "Android";
         if (lower.contains("linux")) return "Linux";
         return "Other";
