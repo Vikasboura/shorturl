@@ -27,7 +27,7 @@ import java.util.List;
  * collision retry loop, and cache coordination.
  */
 @Service
-public class UrlShortenerService {
+public class UrlShortenerService implements ShortenerService {
 
     private static final Logger log = LoggerFactory.getLogger(UrlShortenerService.class);
     private static final int MAX_COLLISION_RETRIES = 5;
