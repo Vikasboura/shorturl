@@ -289,4 +289,4 @@ flowchart LR
 ---
 
 ## License
-Amazon Internal Tool Blueprint. MIT License.
+ShortLink Blueprint. MIT License.
