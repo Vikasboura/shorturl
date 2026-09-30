@@ -24,39 +24,39 @@ Amazon ShortLink is an internal tier-1 URL shortening and analytics routing engi
 ## 2. High-Level Architecture Diagram
 
 ```mermaid
-flowchart TD
-    subgraph ClientTier["Client Tier"]
-        User["User Browser / Mobile Client"]
-        Dashboard["React Admin Console (S3 + CloudFront)"]
+graph TD
+    subgraph ClientTier [Client Tier]
+        User[User Browser or Mobile App]
+        Dashboard[React Admin Console - S3 and CloudFront]
     end
 
-    subgraph SecurityTier["Security and Ingress"]
-        RateLimiter["Custom Token Bucket Rate Limiter (Per-IP)"]
+    subgraph SecurityTier [Security and Ingress]
+        RateLimiter[Custom Token Bucket Rate Limiter - Per IP]
     end
 
-    subgraph ServiceTier["Service Tier (Spring Boot Core)"]
-        Controller["UrlShortenerController"]
-        LRUCache["Custom Thread-Safe LRU Cache (HashMap + Doubly Linked List)"]
-        AsyncWorkerPool["Async Analytics Worker Pool (ThreadPoolTaskExecutor)"]
+    subgraph ServiceTier [Service Tier - Spring Boot Core]
+        Controller[UrlShortenerController]
+        LRUCache[Custom Thread-Safe LRU Cache]
+        AsyncWorkerPool[Async Analytics Worker Pool]
     end
 
-    subgraph PersistenceTier["Persistence Tier (AWS DynamoDB)"]
-        LinksTable[("LinksTable (PK: short_code, TTL: expires_at)")]
-        ClicksTable[("ClickEventsTable (PK: short_code, SK: timestamp#id, GSI: DateIndex)")]
+    subgraph PersistenceTier [Persistence Tier - AWS DynamoDB]
+        LinksTable[(LinksTable - PK short_code, TTL expires_at)]
+        ClicksTable[(ClickEventsTable - PK short_code, GSI DateIndex)]
     end
 
-    User -->|GET /{code} (Redirect)| RateLimiter
+    User -->|GET /code Redirect| RateLimiter
     Dashboard -->|POST /shorten, GET /stats| RateLimiter
-    RateLimiter -->|Pass (200/302)| Controller
-    RateLimiter -->|Exceeded (429 + Retry-After)| User
+    RateLimiter -->|Allow| Controller
+    RateLimiter -->|Block 429| User
 
-    Controller -->|1. Lookup Hot Key| LRUCache
-    LRUCache -->|Cache Hit: Return 302 Found| Controller
-    LRUCache -->|Cache Miss: Fetch DynamoDB| LinksTable
-    LinksTable -->|Return Record & Populate Cache| LRUCache
+    Controller -->|1. Cache Lookup| LRUCache
+    LRUCache -->|Cache Hit: 302 Found| Controller
+    LRUCache -->|Cache Miss| LinksTable
+    LinksTable -->|Return Record| LRUCache
 
-    Controller -->|2. Fire-and-Forget Ingestion| AsyncWorkerPool
-    AsyncWorkerPool -->|Persist Anonymized Event| ClicksTable
+    Controller -->|2. Async Telemetry| AsyncWorkerPool
+    AsyncWorkerPool -->|Persist Event| ClicksTable
 ```
 
 ---
