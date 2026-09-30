@@ -20,6 +20,7 @@ management:
 aws:
   region: ${AWS_REGION:us-east-1}
   dynamodb:
+    mode: ${AWS_DYNAMODB_MODE:in-memory}
     endpoint: ${AWS_DYNAMODB_ENDPOINT:}
     urls-table-name: ${AWS_DYNAMODB_URLS_TABLE:shortlink-urls}
     clicks-table-name: ${AWS_DYNAMODB_CLICKS_TABLE:shortlink-clicks}

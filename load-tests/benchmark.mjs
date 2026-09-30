@@ -5,11 +5,13 @@ import http from 'http';
  * Calculates p50, p90, p95, p99 latencies, requests/second throughput,
  * and error percentages.
  * 
+ * Automatically pre-seeds the test short code so it is guaranteed to exist.
+ * 
  * Usage: node load-tests/benchmark.mjs [concurrency] [totalRequests]
  */
 
 const CONCURRENCY = parseInt(process.argv[2] || '30');
-const TOTAL_REQUESTS = parseInt(process.argv[3] || '1000');
+const TOTAL_REQUESTS = parseInt(process.argv[3] || '2000');
 const HOST = process.env.TARGET_HOST || 'localhost';
 const PORT = parseInt(process.env.TARGET_PORT || '8080');
 const CODE = process.env.SHORT_CODE || 'bench123';
@@ -20,10 +22,45 @@ console.log(` Target: http://${HOST}:${PORT}/${CODE}`);
 console.log(` Concurrency: ${CONCURRENCY} | Total Requests: ${TOTAL_REQUESTS}`);
 console.log(`======================================================\n`);
 
+// 1. Seed the test short code if not already present
+function preSeedLink() {
+  return new Promise((resolve) => {
+    const payload = JSON.stringify({
+      url: 'https://aws.amazon.com/dynamodb',
+      customAlias: CODE,
+      ttlSeconds: 86400
+    });
+
+    const req = http.request({
+      hostname: HOST,
+      port: PORT,
+      path: '/shorten',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(payload),
+        'X-Forwarded-For': '127.0.0.1'
+      }
+    }, (res) => {
+      res.resume();
+      console.log(`[Setup] Short code '/${CODE}' seeded (HTTP status: ${res.statusCode})\n`);
+      resolve();
+    });
+
+    req.on('error', (err) => {
+      console.warn(`[Setup Warning] Could not pre-seed link: ${err.message}. Ensure backend is running.\n`);
+      resolve();
+    });
+
+    req.write(payload);
+    req.end();
+  });
+}
+
 const latencies = [];
 let completed = 0;
 let errors = 0;
-let started = Date.now();
+let started = 0;
 
 function sendRequest(index) {
   return new Promise((resolve) => {
@@ -36,7 +73,7 @@ function sendRequest(index) {
       path: `/${CODE}`,
       method: 'GET',
       headers: {
-        'X-Forwarded-For': `10.0.2.${ipSuffix}`,
+        'X-Forwarded-For': `10.0.3.${ipSuffix}`,
         'User-Agent': 'node-bench/1.0',
         'Referer': 'https://amazon.com'
       }
@@ -63,7 +100,10 @@ function sendRequest(index) {
   });
 }
 
-async function runPool() {
+async function runBenchmark() {
+  await preSeedLink();
+
+  started = Date.now();
   let index = 0;
   async function worker() {
     while (index < TOTAL_REQUESTS) {
@@ -98,4 +138,4 @@ async function runPool() {
   console.log(`------------------------------------------------------\n`);
 }
 
-runPool();
+runBenchmark();

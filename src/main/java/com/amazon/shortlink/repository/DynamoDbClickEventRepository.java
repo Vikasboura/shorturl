@@ -1,6 +1,7 @@
 package com.amazon.shortlink.repository;
 
 import com.amazon.shortlink.domain.ClickEvent;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbIndex;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
@@ -15,6 +16,7 @@ import java.util.List;
  * AWS DynamoDB implementation of ClickEventRepository.
  */
 @Repository
+@ConditionalOnProperty(name = "aws.dynamodb.mode", havingValue = "dynamodb")
 public class DynamoDbClickEventRepository implements ClickEventRepository {
 
     private final DynamoDbTable<ClickEvent> clickEventTable;

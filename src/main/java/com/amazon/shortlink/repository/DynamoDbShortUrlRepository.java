@@ -3,6 +3,7 @@ package com.amazon.shortlink.repository;
 import com.amazon.shortlink.domain.ShortUrl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Expression;
@@ -20,6 +21,7 @@ import java.util.Optional;
  * Uses atomic conditional write checks (attribute_not_exists) to guarantee idempotency.
  */
 @Repository
+@ConditionalOnProperty(name = "aws.dynamodb.mode", havingValue = "dynamodb")
 public class DynamoDbShortUrlRepository implements ShortUrlRepository {
 
     private static final Logger log = LoggerFactory.getLogger(DynamoDbShortUrlRepository.class);

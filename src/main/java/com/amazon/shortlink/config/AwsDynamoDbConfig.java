@@ -3,6 +3,7 @@ package com.amazon.shortlink.config;
 import com.amazon.shortlink.domain.ClickEvent;
 import com.amazon.shortlink.domain.ShortUrl;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -25,6 +26,7 @@ import java.net.URI;
  * In LocalStack / Local test: Overrides endpoint with http://localhost:4566 and dummy credentials.
  */
 @Configuration
+@ConditionalOnProperty(name = "aws.dynamodb.mode", havingValue = "dynamodb")
 public class AwsDynamoDbConfig {
 
     @Value("${aws.region:us-east-1}")
