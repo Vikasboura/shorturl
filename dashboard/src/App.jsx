@@ -114,9 +114,9 @@ export default function App() {
       <nav className="top-nav">
         <div className="nav-brand">
           <Link2 size={22} color="#ec7211" />
-          <span>Amazon Internal Tools</span>
+          <span>ShortLink Console</span>
           <span style={{ color: '#879596' }}>|</span>
-          <span style={{ fontWeight: 500 }}>ShortLink Routing Console</span>
+          <span style={{ fontWeight: 500 }}>URL Routing & Analytics</span>
           <span className="brand-badge">PROD</span>
         </div>
         <div className="nav-actions">
