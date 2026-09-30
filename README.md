@@ -1,4 +1,4 @@
-# Amazon ShortLink (`short.amazon.internal`)
+# ShortLink (`short.url`)
 ### Production-Grade URL Shortener with Real-Time Analytics & Rate Limiting
 
 [![CI/CD Pipeline](https://github.com/amazon/shortlink/actions/workflows/ci.yml/badge.svg)](https://github.com/amazon/shortlink/actions/workflows/ci.yml)
