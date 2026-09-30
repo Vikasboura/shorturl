@@ -1,0 +1,38 @@
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  application:
+    name: shortlink-service
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+aws:
+  region: ${AWS_REGION:us-east-1}
+  dynamodb:
+    endpoint: ${AWS_DYNAMODB_ENDPOINT:}
+    urls-table-name: ${AWS_DYNAMODB_URLS_TABLE:shortlink-urls}
+    clicks-table-name: ${AWS_DYNAMODB_CLICKS_TABLE:shortlink-clicks}
+
+shortlink:
+  base-url: ${SHORTLINK_BASE_URL:http://localhost:8080}
+  code-length: 7
+  cache:
+    max-size: 10000
+  rate-limiter:
+    capacity: 60
+    refill-rate-per-second: 10.0
+  async:
+    core-pool-size: 4
+    max-pool-size: 16
+    queue-capacity: 1000

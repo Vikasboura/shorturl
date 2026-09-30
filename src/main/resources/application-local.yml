@@ -1,0 +1,11 @@
+aws:
+  region: us-east-1
+  dynamodb:
+    endpoint: http://localhost:4566
+    urls-table-name: shortlink-urls
+    clicks-table-name: shortlink-clicks
+
+logging:
+  level:
+    com.amazon.shortlink: DEBUG
+    software.amazon.awssdk: INFO
